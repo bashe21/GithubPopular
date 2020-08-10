@@ -1,0 +1,12 @@
+1、react-navigation
+安装react-navigation顺序问题，先安装基础库，再安装对应的导航栏库，否则可能运行会报错。
+
+2、ctor is not a constructor
+一般这种属于渲染的组建有问题
+
+
+3、requiring unknown module 9
+一般这种情况是导入的组建路径有问题，或者是https://reactnative.dev/docs/troubleshooting#content
+
+4、unrecognized font family 'material icons'  
+按照react-native-vector-icons进行安装配置  android同理需要做相应的配置
