@@ -10,3 +10,9 @@
 
 4、unrecognized font family 'material icons'  
 按照react-native-vector-icons进行安装配置  android同理需要做相应的配置
+
+5、Element type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: undefined
+一般是返回的组件有问题，值为undefined
+
+6、JSON value '<null>' of type NSNull cannot be converted to NSString
+

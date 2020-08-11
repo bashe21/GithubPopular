@@ -9,7 +9,7 @@ export default class MainPage extends React.Component {
         return (
             <NavigationContainer>
                 <Stack.Navigator>
-                    <Stack.Screen name = "TabbarPage" component = {TabbarPage} />
+                    <Stack.Screen name = "TabbarPage" component = {TabbarPage} options = {{headerShown: false}}/>
                 </Stack.Navigator>
             </NavigationContainer>
         );
