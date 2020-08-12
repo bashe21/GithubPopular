@@ -1,4 +1,5 @@
 import Types from '../../actions/types';
+import { act } from 'react-test-renderer';
 
 const defaultState = {};
 export default function onAction(state = defaultState, action) {
@@ -33,6 +34,26 @@ export default function onAction(state = defaultState, action) {
                     pageIndex: action.pageIndex,
                 }
             };
+        case Types.POPULAR_LOAD_MORE_FAIL:
+            return {
+                ...state,
+                [action.storeName]: {
+                    ...state[action.storeName],
+                    isLoading: false,
+                    hideLoadMore: true,
+                    pageIndex: action.pageIndex,
+                }
+            }
+        case Types.POPULAR_LOAD_MORE_SUCCESS:
+            return {
+                ...state,
+                [action.storeName]: {
+                    ...state[action.storeName],
+                    projectModels: action.projectModels,
+                    hideLoadMore: true,
+                    pageIndex: action.pageIndex,
+                }
+            }
         default: 
             return state;
     }

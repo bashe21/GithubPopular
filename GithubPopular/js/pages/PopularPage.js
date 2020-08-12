@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, StyleSheet,FlatList, RefreshControl, Text} from 'react-native';
+import {View, StyleSheet,FlatList, RefreshControl, Text, ActivityIndicator} from 'react-native';
 import {connect} from 'react-redux';
 import actions from '../actions';
 import NavigatorBar from '../public/NavigatorBar'
 import SafeAreaViewPlus from '../public/SafeAreaViewPlus';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs'
+import PopularItem from '../public/PopularItem';
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -84,12 +85,15 @@ class PopularTab extends React.Component {
     }
 
     loadData(loadMore = false, refreshFavorite = false) {
-        const {onloadPopularData} = this.props;
+        let store = this.fetchStore();
+        const {onloadPopularData, onloadMorePopularData} = this.props;
         let url = this.genFetchUrl(this.storeName);
         if (loadMore) {
-
+            onloadMorePopularData(this.storeName, ++store.pageIndex, pageSize, store.items, null, callback => {
+                alert('没有更多了');
+            });
         } else if (refreshFavorite) {
-
+            
         } else {
             onloadPopularData(this.storeName, url, pageSize);
         }
@@ -114,14 +118,29 @@ class PopularTab extends React.Component {
     }
 
     renderItem(data) {
-        return <View style = {styles.container}>
-            <Text>{data.item.item.description}</Text>
-        </View>
+        const item = data.item;
+
+        return (
+            <PopularItem 
+                projectModel = {item}
+
+            />
+        );
+    }
+
+    genFooterIndicator() {
+        let store = this.fetchStore();
+        store.hideLoadingMore ? null : (
+            <View style={styles.indicatorContainer}>
+                <ActivityIndicator style={styles.indicator}/>
+                <Text>正在加载更多</Text>
+            </View>
+        );
     }
 
     render() {
         let store = this.fetchStore();
-        return (<View>
+        return (<View style={{flex: 1}}>
             <FlatList 
                 data = {store.projectModels}
                 renderItem = {(data) => this.renderItem(data)}
@@ -136,6 +155,17 @@ class PopularTab extends React.Component {
                         tintColor = {'red'}
                     />
                 }
+                ListFooterComponent = {this.genFooterIndicator()}
+                onEndReached = {() => {
+                    setTimeout(() => {
+                        console.log('----onEndReached----')
+                        this.loadData(true);
+                    }, 100);
+                }}
+                onEndReachedThreshold = {0.5}
+                onMomentumScrollBegin = {() => {
+                    console.log('----onMomentumScrollBegin----')
+                }}
             />
         </View>);
     }
@@ -147,6 +177,7 @@ const mapPopularTabStateToProps = state => ({
 
 const mapPopularTabDispatchToProps = dispatch => ({
     onloadPopularData: (storeName, url, pageSize, favoriteDao) => dispatch(actions.onloadPopularData(storeName, url, pageSize, favoriteDao)),
+    onloadMorePopularData: (storeName, pageIndex, pageSize, items, favorite, callback) => dispatch(actions.onloadMorePopularData(storeName, pageIndex, pageSize, items, favorite, callback)),
 });
 
 const PopularTabPage = connect(mapPopularTabStateToProps, mapPopularTabDispatchToProps)(PopularTab);
@@ -157,5 +188,15 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#f5fcff',
     },
+
+    indicatorContainer: {
+        alignItems: 'center',
+    },
+
+    indicator: {
+        color: 'red',
+        margin: 10,
+    }
 });

@@ -24,6 +24,9 @@ export function onloadMorePopularData(storeName, pageIndex, pageSize, dataArray 
     return (dispatch => {
         setTimeout(() => {
             if ((pageIndex - 1) * pageSize >= dataArray.length) {
+                if (typeof callback === 'function') {
+                    callback('no more data');
+                }
                 dispatch({
                     type: Types.POPULAR_LOAD_MORE_FAIL,
                     pageIndex: --pageIndex,
