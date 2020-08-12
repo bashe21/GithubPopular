@@ -17,4 +17,4 @@
 6、JSON value '<null>' of type NSNull cannot be converted to NSString
 
 7、Objects are not valid as a React child (found: object with keys {item, index, separators})
-
+当使用react 输出一个object 的时候，会报错,render里的那个变量children必须是一个数组

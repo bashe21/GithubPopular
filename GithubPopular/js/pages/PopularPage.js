@@ -115,7 +115,7 @@ class PopularTab extends React.Component {
 
     renderItem(data) {
         return <View style = {styles.container}>
-            <Text>{data}</Text>
+            <Text>{data.item.item.description}</Text>
         </View>
     }
 
