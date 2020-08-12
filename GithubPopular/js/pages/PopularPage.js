@@ -6,6 +6,7 @@ import NavigatorBar from '../public/NavigatorBar'
 import SafeAreaViewPlus from '../public/SafeAreaViewPlus';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs'
 import PopularItem from '../public/PopularItem';
+import NavigationUtils from '../utils/NavigationUtils';
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -123,8 +124,12 @@ class PopularTab extends React.Component {
         return (
             <PopularItem 
                 projectModel = {item}
-                onSelect = {() => {
-
+                onSelect = {(callback) => {
+                    const {navigation} = this.props;
+                    NavigationUtils.goPage(navigation, 'DetailPage', {
+                        projectModel: item,
+                        callback,
+                    });
                 }}
                 onFavorite = {() => {
 
