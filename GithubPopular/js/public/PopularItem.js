@@ -1,14 +1,15 @@
 import React from 'react';
 import {View, TouchableOpacity, Text, Image, StyleSheet} from 'react-native';
+import BaseItem from '../public/BaseItem';
 
-export default class PopularItem extends React.Component {
+export default class PopularItem extends BaseItem {
     render() {
         const {projectModel} = this.props;
         const {item} = projectModel;
         if (!item || !item.owner) return null;
 
         return (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => this.onItemClick()}>
                 <View style={styles.container}>
                     <Text style={styles.title}>{item.full_name}</Text>
                     <Text style={styles.description}>{item.description}</Text>
@@ -24,6 +25,7 @@ export default class PopularItem extends React.Component {
                             <Text>Stars:</Text>
                             <Text>{item.stargazers_count}</Text>
                         </View>
+                        {this.favoriteIcon()}
                     </View>
                 </View>
             </TouchableOpacity>

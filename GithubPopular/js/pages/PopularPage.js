@@ -123,7 +123,12 @@ class PopularTab extends React.Component {
         return (
             <PopularItem 
                 projectModel = {item}
+                onSelect = {() => {
 
+                }}
+                onFavorite = {() => {
+
+                }}
             />
         );
     }
