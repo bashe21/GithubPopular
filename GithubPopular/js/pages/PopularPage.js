@@ -7,6 +7,7 @@ import SafeAreaViewPlus from '../public/SafeAreaViewPlus';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs'
 import PopularItem from '../public/PopularItem';
 import NavigationUtils from '../utils/NavigationUtils';
+import Toast from 'react-native-easy-toast';
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -91,7 +92,7 @@ class PopularTab extends React.Component {
         let url = this.genFetchUrl(this.storeName);
         if (loadMore) {
             onloadMorePopularData(this.storeName, ++store.pageIndex, pageSize, store.items, null, callback => {
-                alert('没有更多了');
+                this.refs.toast.show('no more data');
             });
         } else if (refreshFavorite) {
             
@@ -176,6 +177,10 @@ class PopularTab extends React.Component {
                 onMomentumScrollBegin = {() => {
                     console.log('----onMomentumScrollBegin----')
                 }}
+            />
+            <Toast 
+                ref={'toast'}
+                positon={'center'}
             />
         </View>);
     }
