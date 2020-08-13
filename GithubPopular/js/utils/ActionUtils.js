@@ -1,4 +1,6 @@
 import ProjectModel from '../model/ProjectModel';
+import FavoriteDao from '../dao/FavoriteDao';
+import Utils from '../utils/Utils';
 
 export function handlerData(actionType, dispatch, storeName, data, pageSize, favoriteData) {
     let fixItems = [];
@@ -25,11 +27,16 @@ export function handlerData(actionType, dispatch, storeName, data, pageSize, fav
 
 }
 
-export function projectModels(showItems, favoriteData, callback) {
+export async function projectModels(showItems, favoriteData, callback) {
     let keys = [];
+    try {
+        keys = await FavoriteDao.getFavoriteKeys();
+    } catch (e) {
+        console.log(e);
+    }
     let projectModels = [];
     for (let i = 0; i < showItems.length; i++) {
-        projectModels.push(new ProjectModel(showItems[i], false));
+        projectModels.push(new ProjectModel(showItems[i], Utils.checkFavorite(showItems[i], keys)));
     }
     doCallback(callback, projectModels);
 }

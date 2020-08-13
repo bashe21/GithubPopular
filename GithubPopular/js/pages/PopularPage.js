@@ -8,7 +8,9 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import PopularItem from '../public/PopularItem';
 import NavigationUtils from '../utils/NavigationUtils';
 import Toast from 'react-native-easy-toast';
-
+import FavoriteUtils from '../utils/FavoriteUtils';
+import FavoriteDao from '../dao/FavoriteDao';
+import { FLAG_STORAGE } from '../dao/DataStorage';
 
 const Tab = createMaterialTopTabNavigator();
 class PopularPage extends React.Component {
@@ -75,6 +77,7 @@ export default connect(null, mapDispatchToProps)(PopularPage);
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
 const pageSize = 10;
+const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 class PopularTab extends React.Component {
     constructor(props) {
         super(props);
@@ -91,13 +94,13 @@ class PopularTab extends React.Component {
         const {onloadPopularData, onloadMorePopularData} = this.props;
         let url = this.genFetchUrl(this.storeName);
         if (loadMore) {
-            onloadMorePopularData(this.storeName, ++store.pageIndex, pageSize, store.items, null, callback => {
+            onloadMorePopularData(this.storeName, ++store.pageIndex, pageSize, store.items, favoriteDao, callback => {
                 this.refs.toast.show('no more data');
             });
         } else if (refreshFavorite) {
             
         } else {
-            onloadPopularData(this.storeName, url, pageSize);
+            onloadPopularData(this.storeName, url, pageSize, favoriteDao);
         }
     }
 
@@ -132,8 +135,8 @@ class PopularTab extends React.Component {
                         callback,
                     });
                 }}
-                onFavorite = {() => {
-
+                onFavorite = {(item, isFavorite) => {
+                    FavoriteUtils.onFavorite(favoriteDao, item, isFavorite, FLAG_STORAGE.flag_popular);
                 }}
             />
         );
