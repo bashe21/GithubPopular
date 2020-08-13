@@ -2,7 +2,7 @@
 安装react-navigation顺序问题，先安装基础库，再安装对应的导航栏库，否则可能运行会报错。
 
 2、ctor is not a constructor
-一般这种属于渲染的组建有问题
+一般这种属于渲染的组建有问题 有时报错莫名其妙，重新运行又好了
 
 
 3、requiring unknown module 9
