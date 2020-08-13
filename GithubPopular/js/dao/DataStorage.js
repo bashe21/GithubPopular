@@ -58,7 +58,7 @@ export default class DataStore {
         return new Promise((resolve, reject) => {
             this.fetchLocalData(url)
                 .then((wrapData) => {
-                    if (wrapData && DataStore.checkDataIsExpired(wrapData.timeStamp)) {
+                    if (wrapData && !DataStore.checkDataIsExpired(wrapData.timeStamp)) {
                         resolve(wrapData);
                     } else {
                         this.fetchNetworkData(url)
