@@ -10,6 +10,10 @@ import NavigationUtils from '../utils/NavigationUtils';
 import Toast from 'react-native-easy-toast';
 import TrendingDiag, {TimeSpans} from '../public/TrendingDiag';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { FLAG_STORAGE } from '../dao/DataStorage';
+import FavoriteUtils from '../utils/FavoriteUtils';
+import FavoriteDao from '../dao/FavoriteDao';
+import EventTypes from '../utils/EventTypes';
 
 const DEVICE_EVENT_TIMESPAN_CHANGE = 'DEVICE_EVENT_TIMESPAN_CHANGE';
 const Tab = createMaterialTopTabNavigator();
@@ -120,12 +124,14 @@ export default connect(null, mapDispatchToProps)(TrendingPage);
 const URL = 'https://trendings.herokuapp.com/repo';
 const QUERY_STR = '?since=weekly';
 const pageSize = 10;
+const favorite = new FavoriteDao(FLAG_STORAGE.flag_trending);
 class TrendingTab extends React.Component {
     constructor(props) {
         super(props);
         const {name} = props.route;
         this.storeName = name;
         this.timeSpan = props.timeSpan;
+        this.isFavoriteChange = false;
     }
 
     componentWillMount() {
@@ -137,26 +143,40 @@ class TrendingTab extends React.Component {
 
     componentDidMount() {
         this.loadData();
+        this.favorite_change_listener = DeviceEventEmitter.addListener(EventTypes.favorite_change_trending, (data) => {
+            this.isFavoriteChange = true;
+        });
+        this.tabPress_listener = DeviceEventEmitter.addListener(EventTypes.trending_tabPress, () => {
+            if (this.isFavoriteChange) {
+                this.loadData(false, true);
+            }
+        })
     }
 
     componentWillUnmount() {
         if (this.timeSpanChangeListener) {
             this.timeSpanChangeListener.remove();
         }
+        if (this.favorite_change_listener) {
+            this.favorite_change_listener.remove();
+        }
+        if (this.tabPress_listener) {
+            this.tabPress_listener.remove();
+        }
     }
 
     loadData(loadMore = false, refreshFavorite = false) {
         let store = this.fetchStore();
-        const {onloadTrendingData, onloadMoreTrendingData} = this.props;
+        const {onloadTrendingData, onloadMoreTrendingData, onflushTrendingFavoriteData} = this.props;
         let url = this.genFetchUrl(this.storeName);
         if (loadMore) {
-            onloadMoreTrendingData(this.storeName, ++store.pageIndex, pageSize, store.items, null, callback => {
+            onloadMoreTrendingData(this.storeName, ++store.pageIndex, pageSize, store.items, favorite, callback => {
                 this.refs.toast.show('no more data');
             });
         } else if (refreshFavorite) {
-            
+            onflushTrendingFavoriteData(this.storeName, store.pageIndex, pageSize, store.items, favorite);
         } else {
-            onloadTrendingData(this.storeName, url, pageSize);
+            onloadTrendingData(this.storeName, url, pageSize, favorite);
         }
     }
 
@@ -188,11 +208,12 @@ class TrendingTab extends React.Component {
                     const {navigation} = this.props;
                     NavigationUtils.goPage(navigation, 'DetailPage', {
                         projectModel: item,
+                        flag: FLAG_STORAGE.flag_trending,
                         callback,
                     });
                 }}
-                onFavorite = {() => {
-
+                onFavorite = {(item, isFavorite) => {
+                    FavoriteUtils.onFavorite(favorite, item, isFavorite, FLAG_STORAGE.flag_trending);
                 }}
             />
         );
@@ -252,6 +273,7 @@ const mapPopularTabStateToProps = state => ({
 const mapPopularTabDispatchToProps = dispatch => ({
     onloadTrendingData: (storeName, url, pageSize, favoriteDao) => dispatch(actions.onloadTrendingData(storeName, url, pageSize, favoriteDao)),
     onloadMoreTrendingData: (storeName, pageIndex, pageSize, items, favorite, callback) => dispatch(actions.onloadMoreTrendingData(storeName, pageIndex, pageSize, items, favorite, callback)),
+    onflushTrendingFavoriteData: (storeName, pageIndex, pageSize, items, favorite) => dispatch(actions.onflushTrendingFavoriteData(storeName, pageIndex, pageSize, items, favorite)),
 });
 
 const TrendingTabPage = connect(mapPopularTabStateToProps, mapPopularTabDispatchToProps)(TrendingTab);

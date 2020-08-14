@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet,FlatList, RefreshControl, Text, ActivityIndicator} from 'react-native';
+import {View, StyleSheet,FlatList, RefreshControl, Text, ActivityIndicator, DeviceEventEmitter} from 'react-native';
 import {connect} from 'react-redux';
 import actions from '../actions';
 import NavigatorBar from '../public/NavigatorBar'
@@ -11,6 +11,7 @@ import Toast from 'react-native-easy-toast';
 import FavoriteUtils from '../utils/FavoriteUtils';
 import FavoriteDao from '../dao/FavoriteDao';
 import { FLAG_STORAGE } from '../dao/DataStorage';
+import EventTypes from '../utils/EventTypes';
 
 const Tab = createMaterialTopTabNavigator();
 class PopularPage extends React.Component {
@@ -83,22 +84,41 @@ class PopularTab extends React.Component {
         super(props);
         const {name} = props.route;
         this.storeName = name;
+        this.isFavoriteChange = false;
     }
 
     componentDidMount() {
         this.loadData();
+        this.favorite_change_listener = DeviceEventEmitter.addListener(EventTypes.favorite_change_popular, (data) => {
+            this.isFavoriteChange = true;
+        });
+        this.tabPress_listener = DeviceEventEmitter.addListener(EventTypes.popular_tabPress, () => {
+            if (this.isFavoriteChange) {
+                this.loadData(false, true);
+            }
+        });
+    }
+
+    componentWillUnmount() {
+        if (this.favorite_change_listener) {
+            this.favorite_change_listener.remove();
+        }
+        if (this.tabPress_listener) {
+            this.tabPress_listener.remove();
+        }
+        
     }
 
     loadData(loadMore = false, refreshFavorite = false) {
         let store = this.fetchStore();
-        const {onloadPopularData, onloadMorePopularData} = this.props;
+        const {onloadPopularData, onloadMorePopularData, onflushPopularData} = this.props;
         let url = this.genFetchUrl(this.storeName);
         if (loadMore) {
             onloadMorePopularData(this.storeName, ++store.pageIndex, pageSize, store.items, favoriteDao, callback => {
                 this.refs.toast.show('no more data');
             });
         } else if (refreshFavorite) {
-            
+            onflushPopularData(this.storeName, store.pageIndex, pageSize, store.items, favoriteDao);
         } else {
             onloadPopularData(this.storeName, url, pageSize, favoriteDao);
         }
@@ -132,6 +152,7 @@ class PopularTab extends React.Component {
                     const {navigation} = this.props;
                     NavigationUtils.goPage(navigation, 'DetailPage', {
                         projectModel: item,
+                        flag: FLAG_STORAGE.flag_popular,
                         callback,
                     });
                 }}
@@ -196,6 +217,7 @@ const mapPopularTabStateToProps = state => ({
 const mapPopularTabDispatchToProps = dispatch => ({
     onloadPopularData: (storeName, url, pageSize, favoriteDao) => dispatch(actions.onloadPopularData(storeName, url, pageSize, favoriteDao)),
     onloadMorePopularData: (storeName, pageIndex, pageSize, items, favorite, callback) => dispatch(actions.onloadMorePopularData(storeName, pageIndex, pageSize, items, favorite, callback)),
+    onflushPopularData: (storeName, pageIndex, pageSize, items, favorite) => dispatch(actions.onflushPopularFavoriteData(storeName, pageIndex, pageSize, items, favorite)),
 });
 
 const PopularTabPage = connect(mapPopularTabStateToProps, mapPopularTabDispatchToProps)(PopularTab);

@@ -53,6 +53,17 @@ export default function onAction(state = defaultState, action) {
                     pageIndex: action.pageIndex,
                 }
             }
+        case Types.POPULAR_FLUSH_FAVORITE: 
+            return {
+                ...state,
+                [action.storeName]: {
+                    ...state[action.storeName],
+                    projectModels: action.projectModels,
+                    isLoading: false,
+                    hideLoadMore: true,
+                    pageIndex: action.pageIndex,
+                }
+            }
         default: 
             return state;
     }

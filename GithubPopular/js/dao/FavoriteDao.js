@@ -67,7 +67,7 @@ export default class FavoriteDao extends React.Component {
             this.getFavoriteKeys().then((keys) => {
                 let items = [];
                 if (keys) {
-                    AsyncStorage.getItem(keys, (error, stores) => {
+                    AsyncStorage.multiGet(keys, (error, stores) => {
                         try {
                             stores.map((result, i) => {
                                 let key = result[0];

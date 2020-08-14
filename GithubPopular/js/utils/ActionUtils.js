@@ -30,7 +30,7 @@ export function handlerData(actionType, dispatch, storeName, data, pageSize, fav
 export async function projectModels(showItems, favoriteData, callback) {
     let keys = [];
     try {
-        keys = await FavoriteDao.getFavoriteKeys();
+        keys = await favoriteData.getFavoriteKeys();
     } catch (e) {
         console.log(e);
     }

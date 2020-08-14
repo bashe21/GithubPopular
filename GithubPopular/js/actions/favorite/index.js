@@ -10,7 +10,7 @@ export function onloadFavoriteData(flag, isShowLoading) {
 
         new FavoriteDao(flag).getAllItems().then((items) => {
             let resultData = [];
-            for (let i = 0; i < items.lenght; i++) {
+            for (let i = 0; i < items.length; i++) {
                 resultData.push(new ProjectModel(items[i], true));
             }
             dispatch({type: Types.FAVORITE_LOAD_DATA_SUCCESS, projectModels: resultData, storeName: flag});

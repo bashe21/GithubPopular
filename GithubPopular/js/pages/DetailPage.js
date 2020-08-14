@@ -6,14 +6,15 @@ import ViewUtils from '../utils/ViewUtils';
 import SafeAreaViewPlus from '../public/SafeAreaViewPlus';
 import {WebView} from 'react-native-webview';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import FavoriteDao from '../dao/FavoriteDao';
 
 export default class DetailPage extends React.Component {
     constructor(props) {
         super(props);
-        const {projectModel} = props.route.params;
+        const {projectModel, flag} = props.route.params;
         this.url = projectModel.item.html_url || projectModel.item.repo_link;
         const title = projectModel.item.full_name || projectModel.item.repo;
-
+        this.favoriteDao = new FavoriteDao(flag);
         this.state = {
             title: title,
             url: this.url,
@@ -38,14 +39,23 @@ export default class DetailPage extends React.Component {
     }
 
     onFavoriteButtonClick() {
-
+        const {projectModel, callback} = this.props.route.params;
+        const isFavorite = projectModel.isFavorite = !projectModel.isFavorite;
+        this.setState({isFavorite: isFavorite});
+        callback(isFavorite);
+        let key = projectModel.item.repo || projectModel.item.id.toString();
+        if (projectModel.isFavorite) {
+            this.favoriteDao.saveFavoriteItem(key, JSON.stringify(projectModel.item));
+        } else {
+            this.favoriteDao.removeFavoriteItem(key);
+        }
     }
 
     renderRightButton() {
         return (
             <TouchableOpacity
-                onPress={this.onFavoriteButtonClick()}
-                style={{flexDirection: 'row'}}
+                onPress={() => this.onFavoriteButtonClick()}
+                style={{flexDirection: 'row', alignItems: 'center'}}
             >
                 <FontAwesome 
                     name={this.state.isFavorite ? 'star' : 'star-o'}

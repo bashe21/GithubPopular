@@ -1,4 +1,5 @@
 import React from 'react';
+import {DeviceEventEmitter} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import PopularPage from './PopularPage';
 import TrendingPage from './TrendingPage';
@@ -7,6 +8,7 @@ import Mypage from './Mypage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
+import EventTypes from '../utils/EventTypes';
 
 const Tab = createBottomTabNavigator();
 export default class TabbarPage extends React.Component {
@@ -38,9 +40,15 @@ export default class TabbarPage extends React.Component {
                     activeTintColor: 'red',
                 }}
             >
-                <Tab.Screen name = "最热" component = {PopularPage} />
-                <Tab.Screen name = "趋势" component = {TrendingPage} />
-                <Tab.Screen name = "收藏" component = {FavoritePage} />
+                <Tab.Screen name = "最热" component = {PopularPage} listeners={({navigation,route}) => ({tabPress: e => {
+                    DeviceEventEmitter.emit(EventTypes.popular_tabPress);
+                }})} />
+                <Tab.Screen name = "趋势" component = {TrendingPage} listeners={({navigation, route}) => ({tabPress: e => {
+                    DeviceEventEmitter.emit(EventTypes.trending_tabPress);
+                }})}/>
+                <Tab.Screen name = "收藏" component = {FavoritePage}  listeners={({navigation, route}) => ({tabPress: e => {
+                    DeviceEventEmitter.emit(EventTypes.favorite_tabPress);
+                }})}/>
                 <Tab.Screen name = "我的" component = {Mypage} />
             </Tab.Navigator>
         );

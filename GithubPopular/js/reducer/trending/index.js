@@ -1,4 +1,5 @@
 import Types from '../../actions/types';
+import { act } from 'react-test-renderer';
 
 const defaultState = {};
 export default function onAction(state = defaultState, action) {
@@ -51,6 +52,17 @@ export default function onAction(state = defaultState, action) {
                     projectModels: action.projectModels,
                     hideLoadMore: true,
                     pageIndex: action.pageIndex,
+                }
+            }
+        case Types.TRENDING_FLUSH_FAVORITE: 
+            return {
+                ...state,
+                [action.storeName]: {
+                    ...state[action.storeName],
+                    pageIndex: action.pageIndex,
+                    projectModels: action.projectModels,
+                    isLoading: false,
+                    hideLoadMore: true,
                 }
             }
         default: 

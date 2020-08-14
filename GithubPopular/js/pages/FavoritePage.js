@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet,FlatList, RefreshControl} from 'react-native';
+import {View, StyleSheet,FlatList, RefreshControl, DeviceEventEmitter} from 'react-native';
 import {connect} from 'react-redux';
 import actions from '../actions';
 import NavigatorBar from '../public/NavigatorBar'
@@ -10,7 +10,8 @@ import TrendingItem from '../public/TrendingItem';
 import NavigationUtils from '../utils/NavigationUtils';
 import FavoriteDao from '../dao/FavoriteDao';
 import {FLAG_STORAGE} from '../dao/DataStorage';
-
+import FavoriteUtils from '../utils/FavoriteUtils';
+import EventTypes from '../utils/EventTypes';
 
 const Tab = createMaterialTopTabNavigator();
 class FavoritePage extends React.Component {
@@ -82,12 +83,11 @@ class FavoriteTab extends React.Component {
         this.favoriteDao = new FavoriteDao(flag);
     }
 
-    componentWillMount() {
-        this.loadData(false);
-    }
-
     componentDidMount() {
-        
+        this.loadData(false);
+        this.tabPress_listener = DeviceEventEmitter.addListener(EventTypes.favorite_tabPress, () => {
+            this.loadData();
+        });
     }
 
     loadData(isShowLoading) {
@@ -109,6 +109,15 @@ class FavoriteTab extends React.Component {
         return store;
     }
 
+    onFavorite(item, isFavorite) {
+        FavoriteUtils.onFavorite(this.favoriteDao, item, isFavorite, this.storeName);
+        if (this.storeName == FLAG_STORAGE.flag_popular) {
+            DeviceEventEmitter.emit(EventTypes.favorite_change_popular);
+        } else {
+            DeviceEventEmitter.emit(EventTypes.favorite_change_trending);
+        }
+    }
+
     renderItem(data) {
         const item = data.item;
         const Item = this.storeName === FLAG_STORAGE.flag_popular ? PopularItem : TrendingItem;
@@ -122,8 +131,8 @@ class FavoriteTab extends React.Component {
                         callback,
                     });
                 }}
-                onFavorite = {() => {
-
+                onFavorite = {(item, isFavorite) => {
+                    this.onFavorite(item, isFavorite);
                 }}
             />
         );
@@ -135,7 +144,7 @@ class FavoriteTab extends React.Component {
             <FlatList 
                 data = {store.projectModels}
                 renderItem = {(data) => this.renderItem(data)}
-                keyExtractor = {item => "" + item.item.id}
+                keyExtractor = {item => "" + (item.item.id || item.item.repo)}
                 refreshControl = {
                     <RefreshControl 
                         title = {'loading'}
