@@ -13,7 +13,6 @@ export default class AboutPage extends React.Component {
             ...this.params,
             navigation: props.navigation,
         }, data => {this.setState(...data)});
-        this.state = {data: {}};
     }
 
     onClick(menu) {
