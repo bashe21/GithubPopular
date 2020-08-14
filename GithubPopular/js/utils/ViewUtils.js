@@ -1,5 +1,5 @@
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
+import {TouchableOpacity, StyleSheet, View, Text} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default class ViewUtils {
@@ -35,4 +35,49 @@ export default class ViewUtils {
             </TouchableOpacity>
         );
     }
+
+    static getSettingItem(callback, text, color, Icons, icon, expandableIcon) {
+        return (
+            <TouchableOpacity
+                onPress={callback}
+                style={styles.setting_item_container}
+            >
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    {
+                        (Icons && icon) ? (
+                            <Icons 
+                                name={icon}
+                                size={16}
+                                style={{color: color, marginRight: 10}}
+                            />
+                        ) : 
+                        <View style = {{opacity: 1, width: 16, height: 16, marginRight: 10,}}/>
+                    } 
+                    
+                    <Text>{text}</Text>
+                </View>
+
+                <Ionicons 
+                    name={expandableIcon ? expandableIcon : 'ios-arrow-forward'}
+                    size={16}
+                    style={{marginLeft: 10, alignSelf: 'center', color: color || 'black'}}
+                />
+            </TouchableOpacity>
+        );
+    }
+
+    static getMenuItem(callback, menu, color, expandableIcon) {
+        return ViewUtils.getSettingItem(callback, menu.name, color, menu.Icons, menu.icon, expandableIcon);
+    }
 }
+
+const styles = StyleSheet.create({
+    setting_item_container: {
+        backgroundColor: 'white',
+        padding: 10,
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+    }
+})
