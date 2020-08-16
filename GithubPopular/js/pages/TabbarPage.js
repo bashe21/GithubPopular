@@ -25,8 +25,8 @@ export default class TabbarPage extends React.Component {
                             } else if (route.name === '趋势')  {
                                 iconName = 'md-trending-up';
                                 return <Ionicons name={iconName} size={size} color={color} />;
-                            } else if (route.name === '趋势')  {
-                                iconName = 'favotite';
+                            } else if (route.name === '收藏')  {
+                                iconName = 'favorite';
                                 return <MaterialIcons name={iconName} size={size} color={color} />;
                             } else {
                                 iconName = 'user';

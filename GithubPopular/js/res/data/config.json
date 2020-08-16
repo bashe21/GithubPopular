@@ -42,7 +42,7 @@
     },
     "Contact": {
       "name": "联系方式",
-      "icon": "ios-contacts",
+      "icon": "contacts",
       "items": {
         "QQ": {
           "title": "QQ",

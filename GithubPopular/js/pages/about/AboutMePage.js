@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {View, Linking, Clipboard} from 'react-native';
 import ViewUtils from '../../utils/ViewUtils';
 import {MoreMenu} from '../../public/MoreMenu';
 import GlobalStyles from '../../res/styles/GlobalStyles';
@@ -7,8 +7,8 @@ import AboutCommon from './AboutCommon';
 import config from '../../res/data/config.json';
 import NavigationUtils from '../../utils/NavigationUtils';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-easy-toast';
-import { floor } from 'react-native-reanimated';
 
 export default class AboutMePage extends React.Component {
     constructor(props) {
@@ -28,30 +28,45 @@ export default class AboutMePage extends React.Component {
     }
 
     onClick(menu) {
+        if (!menu) return;
         const {navigation} = this.props;
-        let routeName, params = {};
-        switch(menu) {
-            case MoreMenu.Tutorial:
-                routeName = 'WebViewPage'
-                params = {
-                    url: 'https://coding.m.imooc.com/classindex.html?cid=89',
-                    title: '教程',
-                };
-                break;
-            
-                
+        if (menu.url) {
+            NavigationUtils.goPage(navigation, 'WebViewPage', {
+                url: menu.url,
+                title: menu.title,
+            });
+            return;
         }
-        if (routeName) {
-            NavigationUtils.goPage(navigation, routeName, params);
+        
+        if (menu.account && menu.account.indexOf('@') > -1) {
+            let url = 'mainto' + menu.account;
+            Linking.canOpenURL(url).then((supported) => {
+                if (supported) {
+                    Linking.openURL(url);
+                } else {
+                    console.log('Can\'t open url:' + url);
+                }
+            }).catch(e => {
+                console.log(e);
+            });
+
+            Clipboard.setString(tab.account);
+            this.toast.show(menu.title + menu.account + '已复制到剪切板');
         }
         
     }
 
     _item(data, isShow, key) {
+        let Icon = Ionicons;
+        if (key === 'showContact') {
+            Icon = MaterialIcons;
+        }
         return (
-            ViewUtils.getSettingItem(() => this.setState({
-                [key]: !this.state.key,
-            }), data.name, '#678', Ionicons, data.icon, isShow? 'ios-arrow-up' : 'ios-arrow-down')
+            ViewUtils.getSettingItem(() => {
+                this.setState({
+                    [key]: !this.state[key],
+                });
+            }, data.name, '#678', Icon, data.icon, isShow? 'ios-arrow-up' : 'ios-arrow-down')
         );
     }
 

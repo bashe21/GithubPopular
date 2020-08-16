@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {View, Linking} from 'react-native';
 import ViewUtils from '../../utils/ViewUtils';
 import {MoreMenu} from '../../public/MoreMenu';
 import GlobalStyles from '../../res/styles/GlobalStyles';
@@ -34,6 +34,17 @@ export default class AboutPage extends React.Component {
             case MoreMenu.About_Author:
                 routeName = 'AboutMePage';
                 break;
+            case MoreMenu.Feedback:
+                const url = 'mailto://crazycodebody@gmail.com';
+                Linking.canOpenURL(url).then((supported) => {
+                    if (supported) {
+                        Linking.openURL(url);
+                    } else {
+                        console.log('Can\'t open url:' + url);
+                    }
+                }).catch(e => {
+                    console.log(e);
+                })
         }
         if (routeName) {
             NavigationUtils.goPage(navigation, routeName, params);
