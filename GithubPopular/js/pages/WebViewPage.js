@@ -28,7 +28,7 @@ export default class WebViewPage extends React.Component {
         if (this.state.canGoBack) {
             this.webView.goBack();
         } else {
-            NavigationUtils.goBack(this.props.navigaton);
+            NavigationUtils.goBack(this.props.navigation);
         }
     }
 
@@ -39,12 +39,14 @@ export default class WebViewPage extends React.Component {
         />;
 
         return (
-            <SafeAreaViewPlus>
+            <SafeAreaViewPlus
+                topColor={'blue'}
+            >
                 {navigator}
                 <WebView 
                     ref = {(webView) => this.webView = webView}
                     startInLoadingState = {true}
-                    onNavigationStateChange = {(e) = this.onNavigationStateChange(e)}
+                    onNavigationStateChange = {(e) => this.onNavigationStateChange(e)}
                     source = {{uri: this.state.url}}
                 />
             </SafeAreaViewPlus>

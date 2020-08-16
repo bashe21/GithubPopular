@@ -4,6 +4,8 @@ import ViewUtils from '../../utils/ViewUtils';
 import {MoreMenu} from '../../public/MoreMenu';
 import GlobalStyles from '../../res/styles/GlobalStyles';
 import AboutCommon from './AboutCommon';
+import config from '../../res/data/config.json';
+import NavigationUtils from '../../utils/NavigationUtils';
 
 export default class AboutPage extends React.Component {
     constructor(props) {
@@ -13,10 +15,30 @@ export default class AboutPage extends React.Component {
             ...this.params,
             navigation: props.navigation,
         }, data => {this.setState(...data)});
+        this.state = {
+            data: config,
+        }
     }
 
     onClick(menu) {
-
+        const {navigation} = this.props;
+        let routeName, params = {};
+        switch(menu) {
+            case MoreMenu.Tutorial:
+                routeName = 'WebViewPage'
+                params = {
+                    url: 'https://coding.m.imooc.com/classindex.html?cid=89',
+                    title: '教程',
+                };
+                break;
+            case MoreMenu.About_Author:
+                routeName = 'AboutMePage';
+                break;
+        }
+        if (routeName) {
+            NavigationUtils.goPage(navigation, routeName, params);
+        }
+        
     }
 
     getItem(menu) {

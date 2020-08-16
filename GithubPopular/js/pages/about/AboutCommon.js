@@ -9,13 +9,13 @@ import GlobalStyles from '../../res/styles/GlobalStyles';
 
 const AVATAR_SIZE = 90;
 const PARALLAX_HEADER_HEIGHT = 270;
-const TOP = (Platform.OS === 'ios') ? 20+ (DeviceInfo.hasNotch() ? 24 : 0) : 0;
+const TOP = (Platform.OS === 'ios') ? 20 + (DeviceInfo.hasNotch() ? 24 : 0) : 0;
 const STICKY_HEADER_HEIGHT = (Platform.OS === 'ios') ? ( GlobalStyles.nav_bar_height_ios + TOP) : GlobalStyles.nav_bar_height_android;
 const window = Dimensions.get('window');
 
-export default class AboutCommon extends React.Component {
+export default class AboutCommon {
     constructor(props, updateState) {
-        super(props);
+      this.props = props;
         this.updateState = updateState;
         this.backPress = new BackPressComponent({backPress: () => this.onBackPress()});
     }
@@ -62,7 +62,7 @@ export default class AboutCommon extends React.Component {
                 <View style={{position: 'absolute',
                               top: 0,
                               width: window.width,
-                              backgroundColor: 'rgba(0,0,0,.4)',
+                              backgroundColor: 'rgba(0,0,0,0.4)',
                               height: PARALLAX_HEADER_HEIGHT}}/>
             </View>
         );
@@ -91,7 +91,7 @@ export default class AboutCommon extends React.Component {
               {ViewUtils.getLeftBackButton(() => {
                   NavigationUtils.goBack(this.props.navigation);
               })}
-              {ViewUtils.getLeftShareButton(() => this.onShare())}
+              {ViewUtils.getRightShareButton(() => this.onShare())}
             </View>
           )
 
