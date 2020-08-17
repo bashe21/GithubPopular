@@ -28,4 +28,6 @@
   underlayColor={'transparent'}
   key={i} />
 
+10、注意静态函数中this的问题，和对象实例this的值是不一样的
+
 

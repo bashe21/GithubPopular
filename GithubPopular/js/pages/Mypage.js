@@ -7,6 +7,7 @@ import GlobalStyles from '../res/styles/GlobalStyles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ViewUtils from '../utils/ViewUtils';
 import NavigationUtils from '../utils/NavigationUtils';
+import {FLAG_LANGUAGE} from '../dao/LanguageDao';
 
 export default class MyPage extends React.Component {
     onClick(menu) {
@@ -15,6 +16,25 @@ export default class MyPage extends React.Component {
         switch(menu) {
             case MoreMenu.About:
                 routeName = 'AboutPage';
+                break;
+            case MoreMenu.Tutorial:
+                routeName = 'WebViewPage';
+                params = {
+                    url: 'https://coding.m.imooc.com/classindex.html?cid=89',
+                    title: '教程',
+                }
+                break;
+            case MoreMenu.Sort_Language:
+                routeName = 'SortKeyPage';
+                params = {
+                    flag: FLAG_LANGUAGE.flag_language,
+                }
+                break;
+            case MoreMenu.Sort_Key:
+                routeName = 'SortKeyPage';
+                params = {
+                    flag: FLAG_LANGUAGE.flag_key,
+                }
                 break;
             default: 
                 break;

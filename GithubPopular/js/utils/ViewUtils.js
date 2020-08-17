@@ -36,6 +36,22 @@ export default class ViewUtils {
         );
     }
 
+    /* 
+    获取右侧文字按钮
+    @params title
+    @params callback
+    @returns {XML}
+    */
+   static getRightButton(title, callback) {
+        return <TouchableOpacity
+            style = {{alignItems: 'center'}}
+            onPress = {callback}
+        >
+            <Text style = {{fontSize: 20, color: '#ffffff', marginRight: 10}}>{title}</Text>
+            
+        </TouchableOpacity>
+    }
+
     static getSettingItem(callback, text, color, Icons, icon, expandableIcon) {
         return (
             <TouchableOpacity
