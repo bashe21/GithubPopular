@@ -14,26 +14,31 @@ import { FLAG_STORAGE } from '../dao/DataStorage';
 import FavoriteUtils from '../utils/FavoriteUtils';
 import FavoriteDao from '../dao/FavoriteDao';
 import EventTypes from '../utils/EventTypes';
+import {FLAG_LANGUAGE} from '../dao/LanguageDao';
 
 const DEVICE_EVENT_TIMESPAN_CHANGE = 'DEVICE_EVENT_TIMESPAN_CHANGE';
 const Tab = createMaterialTopTabNavigator();
 class TrendingPage extends React.Component {
     constructor(props) {
         super(props);
-        this.keys = ['swift', 'ios', 'php', 'javascript'];
         this.state = {
             timeSpan: TimeSpans[0],
         }
     }
 
     componentDidMount() {
-       console.log('componentDidMount');
+       const {onloadLanguage} = this.props;
+       onloadLanguage(FLAG_LANGUAGE.flag_language);
     }
 
     _genScreens() {
         let tabs = [];
-        this.keys.forEach((item, index) => {
-            tabs.push(<Tab.Screen name = {item} key = {item}>{props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan}/>}</Tab.Screen>);
+        let {langs} = this.props;
+        langs.forEach((item, index) => {
+            if (item.checked) {
+                tabs.push(<Tab.Screen name = {item.name} key = {index}>{props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan}/>}</Tab.Screen>);
+            }
+            
         });
         return tabs;
     }
@@ -83,7 +88,9 @@ class TrendingPage extends React.Component {
 
         />;
 
-        let topTab = <Tab.Navigator
+        const {langs} = this.props;
+
+        let topTab = langs.length > 0 ? (<Tab.Navigator
             tabBarOptions = {{
                 tabStyle: {
                     width: 120,
@@ -101,7 +108,7 @@ class TrendingPage extends React.Component {
             lazy = {true}
         >
             {this._genScreens()}
-        </Tab.Navigator>;
+        </Tab.Navigator>) : null;
 
         return (
             <SafeAreaViewPlus
@@ -115,11 +122,15 @@ class TrendingPage extends React.Component {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    
+const mapStateToProps = state => ({
+    langs: state.lauguage.langs,
 });
 
-export default connect(null, mapDispatchToProps)(TrendingPage);
+const mapDispatchToProps = dispatch => ({
+    onloadLanguage: (flag) => dispatch(actions.onloadLanguage(flag)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TrendingPage);
 
 const URL = 'https://trendings.herokuapp.com/repo';
 const QUERY_STR = '?since=weekly';

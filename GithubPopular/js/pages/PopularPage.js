@@ -12,33 +12,41 @@ import FavoriteUtils from '../utils/FavoriteUtils';
 import FavoriteDao from '../dao/FavoriteDao';
 import { FLAG_STORAGE } from '../dao/DataStorage';
 import EventTypes from '../utils/EventTypes';
+import {FLAG_LANGUAGE} from '../dao/LanguageDao';
 
 const Tab = createMaterialTopTabNavigator();
 class PopularPage extends React.Component {
     constructor(props) {
         super(props);
-        this.keys = ['java', 'ios', 'php', 'javascript'];
     }
 
     componentDidMount() {
-       
+       const {onloadLanguage} = this.props;
+       onloadLanguage(FLAG_LANGUAGE.flag_key);
     }
 
     _genScreens() {
         let tabs = [];
-        this.keys.forEach((item, index) => {
-            tabs.push(<Tab.Screen name = {item} key = {item}>{props => <PopularTabPage {...props}/>}</Tab.Screen>);
+        let {keys} = this.props;
+        keys.forEach((item, index) => {
+            if (item.checked) {
+                tabs.push(<Tab.Screen name = {item.name} key = {index}>{props => <PopularTabPage {...props}/>}</Tab.Screen>);
+            }
         });
         return tabs;
     }
 
     render() {
+        let keys = [];
+        if (this.props.keys && this.props.keys.length > 0) {
+            keys = this.props.keys;
+        }
         let navigator = <NavigatorBar 
             title = "最热"
 
         />;
 
-        let topTab = <Tab.Navigator
+        let topTab = keys.length > 0 ? (<Tab.Navigator
             tabBarOptions = {{
                 tabStyle: {
                     width: 120,
@@ -56,7 +64,7 @@ class PopularPage extends React.Component {
             lazy = {true}
         >
             {this._genScreens()}
-        </Tab.Navigator>;
+        </Tab.Navigator>) : null;
 
         return (
             <SafeAreaViewPlus
@@ -69,11 +77,15 @@ class PopularPage extends React.Component {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    
+const mapStateToProps = state => ({
+    keys: state.language.keys,
 });
 
-export default connect(null, mapDispatchToProps)(PopularPage);
+const mapDispatchToProps = dispatch => ({
+    onloadLanguage: (flag) => dispatch(actions.onloadLanguage(flag)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PopularPage);
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
