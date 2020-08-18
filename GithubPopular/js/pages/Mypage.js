@@ -36,6 +36,27 @@ export default class MyPage extends React.Component {
                     flag: FLAG_LANGUAGE.flag_key,
                 }
                 break;
+            case MoreMenu.Custom_Language:
+                routeName = 'CustomKeyPage';
+                params = {
+                    flag: FLAG_LANGUAGE.flag_language,
+                    isRemoveKey: false,
+                }
+                break;
+            case MoreMenu.Custom_Key:
+                routeName = 'CustomKeyPage';
+                params = {
+                    flag: FLAG_LANGUAGE.flag_key,
+                    isRemoveKey: false,
+                }
+                break;
+            case MoreMenu.Remove_Key:
+                routeName = 'CustomKeyPage';
+                params = {
+                    flag: FLAG_LANGUAGE.flag_key,
+                    isRemoveKey: true,
+                }
+                break;
             default: 
                 break;
         }

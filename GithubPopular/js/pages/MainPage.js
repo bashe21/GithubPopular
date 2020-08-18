@@ -7,6 +7,7 @@ import WebViewPage from './WebViewPage';
 import AboutPage from './about/AboutPage';
 import AboutMePage from './about/AboutMePage';
 import SortKeyPage from './SortKeyPage';
+import CustomKeyPage from './CustomKeyPage';
 
 const Stack = createStackNavigator();
 export default class MainPage extends React.Component {
@@ -20,6 +21,7 @@ export default class MainPage extends React.Component {
                     <Stack.Screen name = "AboutPage" component = {AboutPage} options = {{headerShown: false}}/>
                     <Stack.Screen name = "AboutMePage" component = {AboutMePage} options = {{headerShown: false}}/>
                     <Stack.Screen name = "SortKeyPage" component = {SortKeyPage} options = {{headerShown: false}}/>
+                    <Stack.Screen name = "CustomKeyPage" component = {CustomKeyPage} options = {{headerShown: false}}/>
                 </Stack.Navigator>
             </NavigationContainer>
         );

@@ -15,11 +15,42 @@ export default class ArrayUtils {
     clone 数组
     */
    static clone(from) {
-    if (!from) return[];
-    let newArray = [];
-    for (let i = 0, l = from.length; i < l; i++) {
-        newArray[i] = from[i];
+        if (!from) return[];
+        let newArray = [];
+        for (let i = 0, l = from.length; i < l; i++) {
+            newArray[i] = from[i];
+        }
+        return newArray;
     }
-    return newArray;
-}
+
+    /* 
+    更新数组，若item已存在则将其从数组中删除，若不存在则将其添加到数组
+    */
+   static updataArray(array, item) {
+        for (let i = 0, len = array.length; i < len; i++) {
+            let temp = array[i];
+            if (item === temp) {
+                array.splice(i, 1);
+                return;
+            }
+        }
+        array.push(item);
+    }
+
+    /* 
+    将数组中指定元素移除
+    @params array
+    @params item 要移除的item
+    @params id 要对比的属性，缺省则比较地址
+    */
+   static remove(array, item, id) {
+        if (!array) return;
+        for (let i = 0, l = array.length; i < l; i++) {
+            const val = array[i];
+            if (item === val || val && val[id] && val[id] === item[id]) {
+                array.splice(i, 1);
+            }
+        }
+        return array;
+    }
 }
