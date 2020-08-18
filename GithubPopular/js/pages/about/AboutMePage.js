@@ -14,6 +14,7 @@ export default class AboutMePage extends React.Component {
     constructor(props) {
         super(props);
         this.params = props.route.params;
+        this.theme = this.params.theme;
         this.aboutCommon = new AboutCommon({
             ...this.params,
             navigation: props.navigation,
@@ -34,6 +35,7 @@ export default class AboutMePage extends React.Component {
             NavigationUtils.goPage(navigation, 'WebViewPage', {
                 url: menu.url,
                 title: menu.title,
+                theme: this.theme,
             });
             return;
         }

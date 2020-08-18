@@ -28,15 +28,16 @@ class FavoritePage extends React.Component {
     _genScreens() {
         let tabs = [];
         this.keys.forEach((item, index) => {
-            tabs.push(<Tab.Screen name = {item} key = {item}>{props => <FavoriteTabPage {...props} flag={this.flags[index]} />}</Tab.Screen>);
+            tabs.push(<Tab.Screen name = {item} key = {item}>{props => <FavoriteTabPage {...props} flag={this.flags[index]} theme={this.props.theme} />}</Tab.Screen>);
         });
         return tabs;
     }
 
     render() {
+        const {theme} = this.props;
         let navigator = <NavigatorBar 
             title = "收藏"
-
+            style = {theme.styles.navBar}
         />;
 
         let topTab = <Tab.Navigator
@@ -60,7 +61,7 @@ class FavoritePage extends React.Component {
 
         return (
             <SafeAreaViewPlus
-                topColor = 'blue'
+                topColor = {theme.themeColor}
             >
                 {navigator}
                 {topTab}
@@ -69,11 +70,11 @@ class FavoritePage extends React.Component {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    
-});
+const mapStateToProps = state => ({
+    theme: state.theme.theme,
+})
 
-export default connect(null, mapDispatchToProps)(FavoritePage);
+export default connect(mapStateToProps)(FavoritePage);
 
 class FavoriteTab extends React.Component {
     constructor(props) {
@@ -129,6 +130,7 @@ class FavoriteTab extends React.Component {
                     NavigationUtils.goPage(navigation, 'DetailPage', {
                         projectModel: item,
                         callback,
+                        theme: this.props.theme,
                     });
                 }}
                 onFavorite = {(item, isFavorite) => {

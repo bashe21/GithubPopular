@@ -40,7 +40,7 @@ class TrendingPage extends React.Component {
             this.preKeys = keys;
             keys.forEach((item, index) => {
                 if (item.checked) {
-                    tabs.push(<Tab.Screen name = {item.name} key = {index}>{props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan}/>}</Tab.Screen>);
+                    tabs.push(<Tab.Screen name = {item.name} key = {index}>{props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan} theme={this.props.theme} />}</Tab.Screen>);
                 }
                 
             });
@@ -90,9 +90,10 @@ class TrendingPage extends React.Component {
     }
 
     render() {
+        const {theme} = this.props;
         let navigator = <NavigatorBar 
             titleView={this.renderTitleView()}
-
+            style={theme.styles.navBar}
         />;
 
         let keys = []
@@ -122,7 +123,7 @@ class TrendingPage extends React.Component {
 
         return (
             <SafeAreaViewPlus
-                topColor = 'blue'
+                topColor = {theme.themeColor}
             >
                 {navigator}
                 {topTab}
@@ -135,6 +136,7 @@ class TrendingPage extends React.Component {
 
 const mapStateToProps = state => ({
     keys: state.language.langs,
+    theme: state.theme.theme,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -232,6 +234,7 @@ class TrendingTab extends React.Component {
                         projectModel: item,
                         flag: FLAG_STORAGE.flag_trending,
                         callback,
+                        theme: this.props.theme,
                     });
                 }}
                 onFavorite = {(item, isFavorite) => {

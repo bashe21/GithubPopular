@@ -30,20 +30,21 @@ class PopularPage extends React.Component {
         let {keys} = this.props;
         keys.forEach((item, index) => {
             if (item.checked) {
-                tabs.push(<Tab.Screen name = {item.name} key = {index}>{props => <PopularTabPage {...props}/>}</Tab.Screen>);
+                tabs.push(<Tab.Screen name = {item.name} key = {index}>{props => <PopularTabPage {...props} theme={this.props.theme}/>}</Tab.Screen>);
             }
         });
         return tabs;
     }
 
     render() {
+        const {theme} = this.props;
         let keys = [];
         if (this.props.keys && this.props.keys.length > 0) {
             keys = this.props.keys;
         }
         let navigator = <NavigatorBar 
             title = "最热"
-
+            style={theme.styles.navBar}
         />;
 
         let topTab = keys.length > 0 ? (<Tab.Navigator
@@ -68,7 +69,7 @@ class PopularPage extends React.Component {
 
         return (
             <SafeAreaViewPlus
-                topColor = 'blue'
+                topColor = {theme.themeColor}
             >
                 {navigator}
                 {topTab}
@@ -79,6 +80,7 @@ class PopularPage extends React.Component {
 
 const mapStateToProps = state => ({
     keys: state.language.keys,
+    theme: state.theme.theme,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -166,6 +168,7 @@ class PopularTab extends React.Component {
                         projectModel: item,
                         flag: FLAG_STORAGE.flag_popular,
                         callback,
+                        theme: this.props.theme,
                     });
                 }}
                 onFavorite = {(item, isFavorite) => {

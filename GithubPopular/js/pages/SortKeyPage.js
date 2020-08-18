@@ -21,6 +21,7 @@ class SortKeyPage extends React.Component {
     constructor(props) {
         super(props);
         this.params = props.route.params;
+        this.theme = this.params.theme;
         this.flag = this.params.flag;
         this.languageDao = new LanguageDao(this.flag);
         this.backPress = new BackPressComponent((e) => this.onBackPress());
@@ -143,9 +144,10 @@ class SortKeyPage extends React.Component {
             title={title}
             leftButton={ViewUtils.getLeftBackButton(() => this.onBack())}
             rightButton={ViewUtils.getRightButton('保存', () => this.onSave())}
+            style={this.theme.styles.navBar}
         />;
 
-        return (<SafeAreaViewPlus topColor={'blue'}>
+        return (<SafeAreaViewPlus topColor={this.theme.themeColor}>
             {navigator}
             <ScrollView
                 ref={(scrollView => this.scrollView = scrollView)}

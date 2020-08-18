@@ -9,11 +9,12 @@ import {WebView} from 'react-native-webview';
 export default class WebViewPage extends React.Component {
     constructor(props) {
         super(props);
-        const {title, url} = props.route.params;
+        const {title, url, theme} = props.route.params;
         this.state = {
             title: title,
             url: url,
             canGoBack: false,
+            theme,
         };
     }
 
@@ -36,11 +37,12 @@ export default class WebViewPage extends React.Component {
         let navigator = <NavigatorBar 
             title={this.state.title}
             leftButton={ViewUtils.getLeftBackButton(() => this.onBack())}
+            style={this.state.theme.styles.navBar}
         />;
 
         return (
             <SafeAreaViewPlus
-                topColor={'blue'}
+                topColor={this.state.theme.themeColor}
             >
                 {navigator}
                 <WebView 

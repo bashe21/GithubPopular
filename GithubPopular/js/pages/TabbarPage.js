@@ -9,9 +9,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import EventTypes from '../utils/EventTypes';
+import {connect} from 'react-redux';
 
 const Tab = createBottomTabNavigator();
-export default class TabbarPage extends React.Component {
+class TabbarPage extends React.Component {
     render() {
         return (
             <Tab.Navigator 
@@ -37,7 +38,7 @@ export default class TabbarPage extends React.Component {
                 }
                 tabBarOptions = {{
                     inactiveTintColor: 'gray',
-                    activeTintColor: 'red',
+                    activeTintColor: this.props.theme.themeColor,
                 }}
             >
                 <Tab.Screen name = "最热" component = {PopularPage} listeners={({navigation,route}) => ({tabPress: e => {
@@ -54,3 +55,9 @@ export default class TabbarPage extends React.Component {
         );
     }
 }
+
+const mapStateToProps = state => ({
+    theme: state.theme.theme,
+});
+
+export default connect(mapStateToProps)(TabbarPage);

@@ -14,35 +14,42 @@ import actions from '../actions';
 
 class MyPage extends React.Component {
     onClick(menu) {
-        const {navigation} = this.props;
+        const {navigation, theme} = this.props;
         let routeName, params = {};
         switch(menu) {
             case MoreMenu.About:
                 routeName = 'AboutPage';
+                params = {
+                    theme: theme,
+                }
                 break;
             case MoreMenu.Tutorial:
                 routeName = 'WebViewPage';
                 params = {
                     url: 'https://coding.m.imooc.com/classindex.html?cid=89',
                     title: '教程',
+                    theme: theme,
                 }
                 break;
             case MoreMenu.Sort_Language:
                 routeName = 'SortKeyPage';
                 params = {
                     flag: FLAG_LANGUAGE.flag_language,
+                    theme: theme,
                 }
                 break;
             case MoreMenu.Sort_Key:
                 routeName = 'SortKeyPage';
                 params = {
                     flag: FLAG_LANGUAGE.flag_key,
+                    theme: theme,
                 }
                 break;
             case MoreMenu.Custom_Language:
                 routeName = 'CustomKeyPage';
                 params = {
                     flag: FLAG_LANGUAGE.flag_language,
+                    theme: theme,
                     isRemoveKey: false,
                 }
                 break;
@@ -51,6 +58,7 @@ class MyPage extends React.Component {
                 params = {
                     flag: FLAG_LANGUAGE.flag_key,
                     isRemoveKey: false,
+                    theme: theme,
                 }
                 break;
             case MoreMenu.Remove_Key:
@@ -58,6 +66,7 @@ class MyPage extends React.Component {
                 params = {
                     flag: FLAG_LANGUAGE.flag_key,
                     isRemoveKey: true,
+                    theme: theme,
                 }
                 break;
             case MoreMenu.Custom_Theme:
@@ -66,6 +75,9 @@ class MyPage extends React.Component {
                 break;
             case MoreMenu.About_Author:
                 routeName = 'AboutMePage';
+                params = {
+                    theme: theme,
+                }
                 break;
             case MoreMenu.Feedback:
                 const url = 'mailto://crazycodebody@gmail.com';
@@ -100,7 +112,9 @@ class MyPage extends React.Component {
     }
 
     render() {
-        let navigartor = <NavigatorBar title={'我的'}/>;
+        const {theme} = this.props;
+
+        let navigartor = <NavigatorBar title={'我的'} style={theme.styles.navBar}/>;
         let content = <ScrollView>
             <TouchableOpacity 
                 onPress={() => this.onClick(MoreMenu.About)}
@@ -158,8 +172,9 @@ class MyPage extends React.Component {
             <View style={GlobalStyles.line}/>
             {this.getItem(MoreMenu.CodePush)}
         </ScrollView>;
+
         return (
-            <SafeAreaViewPlus topColor={'blue'}>
+            <SafeAreaViewPlus topColor={theme.themeColor}>
                 {navigartor}
                 {content}
                 {this.renderCustomTheme()}

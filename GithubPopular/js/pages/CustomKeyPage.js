@@ -15,6 +15,7 @@ class CustomKeyPage extends React.Component {
     constructor(props) {
         super(props);
         this.flag = props.route.params.flag;
+        this.theme = props.route.params.theme;
         this.isRemoveKey = props.route.params.isRemoveKey;
         this.languageDao = new LanguageDao(this.flag);
         this.backPress = new BackPressComponent(e => this.onBackPress(e));
@@ -146,9 +147,10 @@ class CustomKeyPage extends React.Component {
             title={title}
             leftButton={ViewUtils.getLeftBackButton(() => this.onBack())}
             rightButton={ViewUtils.getRightButton(rightButtonTitle, () => this.onSave())}
+            style={this.theme.styles.navBar}
         />
         return (
-            <SafeAreaViewPlus>
+            <SafeAreaViewPlus topColor={this.theme.themeColor}>
                 {navigator}
                 <ScrollView>
                     {this.renderView()}

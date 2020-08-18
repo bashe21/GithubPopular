@@ -11,7 +11,7 @@ export default function onAction(state=defaultState, action) {
         case Types.THEME_CHANGE: 
             return {
                 ...state,
-                type: action.type,
+                theme: action.theme,
             }
         case Types.SHOW_THEME_View:
             return {

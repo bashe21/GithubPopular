@@ -12,6 +12,7 @@ export default class DetailPage extends React.Component {
     constructor(props) {
         super(props);
         const {projectModel, flag} = props.route.params;
+        this.theme = props.route.params.theme;
         this.url = projectModel.item.html_url || projectModel.item.repo_link;
         const title = projectModel.item.full_name || projectModel.item.repo;
         this.favoriteDao = new FavoriteDao(flag);
@@ -72,10 +73,11 @@ export default class DetailPage extends React.Component {
             title={this.state.title}
             leftButton={ViewUtils.getLeftBackButton(() => this.onBack())}
             rightButton={this.renderRightButton()}
+            style={this.theme.styles.navBar}
         />;
 
         return (
-            <SafeAreaViewPlus>
+            <SafeAreaViewPlus topColor={this.theme.themeColor}>
                 {navigatorBar}
                 <WebView 
                     ref={webView => this.webView = webView}

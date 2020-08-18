@@ -11,6 +11,7 @@ export default class AboutPage extends React.Component {
     constructor(props) {
         super(props);
         this.params = props.route.params;
+        this.theme = this.params.theme;
         this.aboutCommon = new AboutCommon({
             ...this.params,
             navigation: props.navigation,
@@ -29,10 +30,14 @@ export default class AboutPage extends React.Component {
                 params = {
                     url: 'https://coding.m.imooc.com/classindex.html?cid=89',
                     title: '教程',
+                    theme: this.theme,
                 };
                 break;
             case MoreMenu.About_Author:
                 routeName = 'AboutMePage';
+                params = {
+                    theme: this.theme,
+                }
                 break;
             case MoreMenu.Feedback:
                 const url = 'mailto://crazycodebody@gmail.com';
