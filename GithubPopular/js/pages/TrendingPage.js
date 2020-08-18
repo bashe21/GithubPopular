@@ -15,6 +15,7 @@ import FavoriteUtils from '../utils/FavoriteUtils';
 import FavoriteDao from '../dao/FavoriteDao';
 import EventTypes from '../utils/EventTypes';
 import {FLAG_LANGUAGE} from '../dao/LanguageDao';
+import ArrayUtils from '../utils/ArrayUtils';
 
 const DEVICE_EVENT_TIMESPAN_CHANGE = 'DEVICE_EVENT_TIMESPAN_CHANGE';
 const Tab = createMaterialTopTabNavigator();
@@ -24,6 +25,7 @@ class TrendingPage extends React.Component {
         this.state = {
             timeSpan: TimeSpans[0],
         }
+        this.preKeys = [];
     }
 
     componentDidMount() {
@@ -33,14 +35,19 @@ class TrendingPage extends React.Component {
 
     _genScreens() {
         let tabs = [];
-        let {langs} = this.props;
-        langs.forEach((item, index) => {
-            if (item.checked) {
-                tabs.push(<Tab.Screen name = {item.name} key = {index}>{props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan}/>}</Tab.Screen>);
-            }
-            
-        });
-        return tabs;
+        let {keys} = this.props;
+        if (!this.tabs || !ArrayUtils.isEqual(this.preKeys, keys)) {
+            this.preKeys = keys;
+            keys.forEach((item, index) => {
+                if (item.checked) {
+                    tabs.push(<Tab.Screen name = {item.name} key = {index}>{props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan}/>}</Tab.Screen>);
+                }
+                
+            });
+            this.tabs = tabs;
+        }
+        
+        return this.tabs;
     }
 
     renderTitleView() {
@@ -88,9 +95,12 @@ class TrendingPage extends React.Component {
 
         />;
 
-        const {langs} = this.props;
+        let keys = []
+        if (this.props.keys && this.props.keys.length > 0) {
+            keys = this.props.keys;
+        }
 
-        let topTab = langs.length > 0 ? (<Tab.Navigator
+        let topTab = keys.length > 0 ? (<Tab.Navigator
             tabBarOptions = {{
                 tabStyle: {
                     width: 120,
@@ -122,8 +132,9 @@ class TrendingPage extends React.Component {
     }
 }
 
+
 const mapStateToProps = state => ({
-    langs: state.lauguage.langs,
+    keys: state.language.langs,
 });
 
 const mapDispatchToProps = dispatch => ({
