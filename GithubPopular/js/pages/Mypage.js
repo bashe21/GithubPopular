@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking} from 'react-native';
 import {MoreMenu} from '../public/MoreMenu';
 import NavigatorBar from '../public/NavigatorBar';
 import SafeAreaViewPlus from '../public/SafeAreaViewPlus';
@@ -8,8 +8,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ViewUtils from '../utils/ViewUtils';
 import NavigationUtils from '../utils/NavigationUtils';
 import {FLAG_LANGUAGE} from '../dao/LanguageDao';
+import CustomTheme from './CustomTheme';
+import {connect} from 'react-redux';
+import actions from '../actions';
 
-export default class MyPage extends React.Component {
+class MyPage extends React.Component {
     onClick(menu) {
         const {navigation} = this.props;
         let routeName, params = {};
@@ -57,6 +60,24 @@ export default class MyPage extends React.Component {
                     isRemoveKey: true,
                 }
                 break;
+            case MoreMenu.Custom_Theme:
+                const {onShowCustomThemeView} = this.props;
+                onShowCustomThemeView(true);
+                break;
+            case MoreMenu.About_Author:
+                routeName = 'AboutMePage';
+                break;
+            case MoreMenu.Feedback:
+                const url = 'mailto://crazycodebody@gmail.com';
+                Linking.canOpenURL(url).then((supported) => {
+                    if (supported) {
+                        Linking.openURL(url);
+                    } else {
+                        console.log('Can\'t open url:' + url);
+                    }
+                }).catch(e => {
+                    console.log(e);
+                })
             default: 
                 break;
         }
@@ -67,6 +88,15 @@ export default class MyPage extends React.Component {
 
     getItem(menu) {
         return ViewUtils.getMenuItem(() => this.onClick(menu), menu, '#678');
+    }
+
+    renderCustomTheme() {
+        const {customThemeViewVisible, onShowCustomThemeView} = this.props;
+        return <CustomTheme 
+            {...this.props}
+            visible={customThemeViewVisible}
+            onClose={() => onShowCustomThemeView(false)}
+        />;
     }
 
     render() {
@@ -132,10 +162,22 @@ export default class MyPage extends React.Component {
             <SafeAreaViewPlus topColor={'blue'}>
                 {navigartor}
                 {content}
+                {this.renderCustomTheme()}
             </SafeAreaViewPlus>
         );
     }
 }
+
+const mapStateToProps = state => ({
+    customThemeViewVisible: state.theme.customThemeViewVisible,
+    theme: state.theme.theme,
+});
+
+const mapDispatchToProps = dispatch => ({
+    onShowCustomThemeView: (show) => dispatch(actions.onShowCustomThemeView(show)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyPage);
 
 const styles = StyleSheet.create({
     container: {

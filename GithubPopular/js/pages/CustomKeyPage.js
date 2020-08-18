@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, StyleSheet, Dimensions, Text, Alert, View} from 'react-native';
+import {ScrollView, StyleSheet, Alert, View} from 'react-native';
 import LanguageDao,{FLAG_LANGUAGE} from '../dao/LanguageDao';
 import NavigatorBar from '../public/NavigatorBar';
 import SafeAreaViewPlus from '../public/SafeAreaViewPlus';
@@ -8,10 +8,8 @@ import CheckBox from 'react-native-check-box';
 import BackPressComponent from './BackPressComponent';
 import actions from '../actions';
 import {connect} from 'react-redux';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ArrayUtils from '../utils/ArrayUtils';
 import NavigationUtils from '../utils/NavigationUtils';
-import { or } from 'react-native-reanimated';
 
 class CustomKeyPage extends React.Component {
     constructor(props) {

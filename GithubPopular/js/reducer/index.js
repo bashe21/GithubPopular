@@ -4,6 +4,7 @@ import popular from './popular';
 import trending from './trending';
 import favorite from './favorite';
 import language from './language';
+import theme from './theme';
 
 export default combineReducers({
     launch: launch,
@@ -11,4 +12,5 @@ export default combineReducers({
     trending: trending,
     favorite: favorite,
     language:language,
+    theme: theme,
 });
